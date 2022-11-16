@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Collection<User> getAllUsers() {
+    public List<User> getUsers() {
         log.info("Retrieving all users.");
         return userRepository.findAll();
     }

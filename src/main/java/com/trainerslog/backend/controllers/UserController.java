@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("")
     public ResponseEntity<?> getUsers() {
-        return ResponseBuilder.okWithBody(this.userService.getAllUsers());
+        return ResponseBuilder.ok(this.userService.getUsers());
     }
 
     @PostMapping("/register")
@@ -27,15 +27,15 @@ public class UserController {
         return ResponseBuilder.created();
     }
 
-    //TODO: implement this in TLB-4
+    //TODO: implement this in TLB-4 and also add tests
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserLoginCredentials userLoginCredentials) {
-        return ResponseBuilder.okWithBody("Will be implemented with");
+        return ResponseBuilder.ok("Will be implemented with");
     }
 
     @PostMapping("/addRole")
     public ResponseEntity<?> addRoleToUser(@RequestBody UserRoleAdd userRoleAdd) {
         this.userService.addRoleToUser(userRoleAdd.userName(), userRoleAdd.roleName());
-        return ResponseBuilder.okWithBody(String.format("Successfully added role %s to %s", userRoleAdd.userName(), userRoleAdd.roleName()));
+        return ResponseBuilder.ok(String.format("Successfully added role %s to %s", userRoleAdd.userName(), userRoleAdd.roleName()));
     }
 }
