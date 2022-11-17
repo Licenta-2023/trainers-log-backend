@@ -1,7 +1,7 @@
 package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.entities.Role;
-import com.trainerslog.backend.repositories.RoleRepository;
+import com.trainerslog.backend.lib.entities.Role;
+import com.trainerslog.backend.lib.repositories.RoleRepository;
 import com.trainerslog.backend.services.RoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

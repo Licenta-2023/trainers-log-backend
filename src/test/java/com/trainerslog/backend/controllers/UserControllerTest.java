@@ -1,7 +1,6 @@
 package com.trainerslog.backend.controllers;
 
-import com.trainerslog.backend.entities.Role;
-import com.trainerslog.backend.entities.User;
+import com.trainerslog.backend.lib.entities.User;
 import com.trainerslog.backend.lib.types.UserRoleAdd;
 import com.trainerslog.backend.services.UserService;
 import org.junit.jupiter.api.BeforeEach;

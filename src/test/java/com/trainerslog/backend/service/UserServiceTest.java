@@ -1,18 +1,17 @@
 package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.entities.Role;
-import com.trainerslog.backend.entities.User;
-import com.trainerslog.backend.exception.DuplicateUserRoleException;
-import com.trainerslog.backend.exception.NotFoundException;
+import com.trainerslog.backend.lib.entities.Role;
+import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
+import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.types.UserRoles;
-import com.trainerslog.backend.repositories.RoleRepository;
-import com.trainerslog.backend.repositories.UserRepository;
+import com.trainerslog.backend.lib.repositories.RoleRepository;
+import com.trainerslog.backend.lib.repositories.UserRepository;
 import com.trainerslog.backend.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
