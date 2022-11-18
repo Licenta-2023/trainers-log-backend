@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<?> getUsers() {
         return ResponseBuilder.ok(this.userService.getUsers());
     }

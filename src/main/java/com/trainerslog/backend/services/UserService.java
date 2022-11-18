@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -78,6 +75,10 @@ public class UserService implements UserDetailsService {
             try {
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
                 DecodedJWT decodedJWT = SecurityUtils.decodeJWT(refreshToken);
+                var isRefreshTokenClaim = decodedJWT.getClaim("isRefreshToken");
+                if ( isRefreshTokenClaim.isNull() || !isRefreshTokenClaim.asBoolean() ) {
+                    throw new ClientException("Authorization token is not a refresh token!");
+                }
                 String username = decodedJWT.getSubject();
                 User user = getUser(username);
                 String accessToken = SecurityUtils.buildAccessTokenFromUserEntity(user, request);

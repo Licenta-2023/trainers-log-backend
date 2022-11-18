@@ -1,6 +1,9 @@
 package com.trainerslog.backend.lib.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
+
+import java.util.Date;
+
 public class SecurityConstants {
     private static final byte[] secret = "secret".getBytes();
 
@@ -10,6 +13,19 @@ public class SecurityConstants {
 
     private static final Integer refreshTokenExpirationMinutes = 60;
 
+    private static final String[] permittedToAll = {
+            "/api/user/login",
+            "/api/user/register"
+    };
+
+    private static final String[] permittedToTrainer = {
+
+    };
+
+    private static final String[] permittedToUser = {
+            "/api/user/refreshToken"
+    };
+
     public static byte[] getSecret() {
         return secret;
     }
@@ -18,11 +34,23 @@ public class SecurityConstants {
         return algorithm;
     }
 
-    public static Integer getAccessTokenExpirationMinutes() {
-        return accessTokenExpirationMinutes * 60 * 1000;
+    public static Date getAccessTokenExpirationDate() {
+        return new Date(System.currentTimeMillis() + accessTokenExpirationMinutes * 60 * 1000);
     }
 
-    public static Integer getRefreshTokenExpirationMinutes() {
-        return refreshTokenExpirationMinutes * 60 * 1000;
+    public static Date getRefreshTokenExpirationDate() {
+        return new Date(System.currentTimeMillis() + refreshTokenExpirationMinutes * 60 * 1000);
+    }
+
+    public static String[] getAllowedRequestToAll() {
+        return permittedToAll;
+    }
+
+    public static String[] getAllowedRequestToTrainer() {
+        return permittedToTrainer;
+    }
+
+    public static String[] getAllowedRequestToUser() {
+        return permittedToUser;
     }
 }

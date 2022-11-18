@@ -23,7 +23,7 @@ public class SecurityUtils {
     public static UsernamePasswordAuthenticationToken getAuthorizationAuthToken(String token) {
         DecodedJWT decodedJWT = decodeJWT(token);
         String username = decodedJWT.getSubject();
-        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+        String[] roles = Optional.ofNullable(decodedJWT.getClaim("roles").asArray(String.class)).orElse(new String[0]);
 
         return new UsernamePasswordAuthenticationToken(username, null, getAuthoritiesFromRoleStringArray(roles));
     }
@@ -42,7 +42,7 @@ public class SecurityUtils {
     public static String buildAccessTokenFromUserEntity(User user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.getAccessTokenExpirationMinutes())) // TODO: maybe extract constant as date
+                .withExpiresAt(SecurityConstants.getAccessTokenExpirationDate())
                 .withIssuer(request.getRequestURI())
                 .withClaim("roles", getAuthoritiesForUser(user))
                 .sign(SecurityConstants.getAlgorithm());
@@ -51,7 +51,7 @@ public class SecurityUtils {
     public static String buildAccessTokenFromUser(org.springframework.security.core.userdetails.User user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.getAccessTokenExpirationMinutes())) // TODO: maybe extract constant as date
+                .withExpiresAt(SecurityConstants.getAccessTokenExpirationDate())
                 .withIssuer(request.getRequestURI())
                 .withClaim("roles", getAuthoritiesForUser(user))
                 .sign(SecurityConstants.getAlgorithm());
@@ -60,8 +60,10 @@ public class SecurityUtils {
     public static String buildRefreshTokenFromUser(org.springframework.security.core.userdetails.User user, HttpServletRequest request) {
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.getRefreshTokenExpirationMinutes())) // TODO: same as above
+                .withExpiresAt(SecurityConstants.getRefreshTokenExpirationDate())
                 .withIssuer(request.getRequestURI())
+                .withClaim("roles", getAuthoritiesForUser(user))
+                .withClaim("isRefreshToken", true)
                 .sign(SecurityConstants.getAlgorithm());
     }
 

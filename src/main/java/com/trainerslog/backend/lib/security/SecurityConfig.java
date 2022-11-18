@@ -24,19 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final String[] permittedToAll = {
-            "/api/user/login",
-            "/api/user/register",
-            "/api/user/refreshToken"
-    };
 
-    private final String[] permittedToTrainer = {
-
-    };
-
-    private final String[] permittedToUser = {
-
-    };
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -53,19 +41,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Endpoints permitted to all request
         http.authorizeHttpRequests()
-                .antMatchers(permittedToAll).permitAll();
-
-        //Endpoints permitted only to ADMIN
-        http.authorizeHttpRequests()
-                .antMatchers("/api/**").hasAuthority("ADMIN");
+                .antMatchers(SecurityConstants.getAllowedRequestToAll()).permitAll();
 
         //Endpoints permitted only to TRAINER
         http.authorizeHttpRequests()
-                .antMatchers(permittedToTrainer).hasAuthority("TRAINER");
+                .antMatchers(SecurityConstants.getAllowedRequestToTrainer()).hasAnyAuthority("TRAINER", "ADMIN");
 
         //Endpoints permitted only to USER
         http.authorizeHttpRequests()
-                .antMatchers(permittedToUser).hasAnyAuthority("USER", "TRAINER");
+                .antMatchers(SecurityConstants.getAllowedRequestToUser()).hasAnyAuthority("USER", "TRAINER", "ADMIN");
 
         http.authorizeHttpRequests().anyRequest().authenticated();
 
