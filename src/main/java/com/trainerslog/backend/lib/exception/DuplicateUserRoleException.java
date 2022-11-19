@@ -1,4 +1,4 @@
-package com.trainerslog.backend.exception;
+package com.trainerslog.backend.lib.exception;
 
 public class DuplicateUserRoleException extends RuntimeException{
     public DuplicateUserRoleException(String message) {

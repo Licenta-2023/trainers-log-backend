@@ -1,4 +1,4 @@
-package com.trainerslog.backend.entities;
+package com.trainerslog.backend.lib.entities;
 
 import com.trainerslog.backend.lib.types.UserRoles;
 import lombok.AllArgsConstructor;

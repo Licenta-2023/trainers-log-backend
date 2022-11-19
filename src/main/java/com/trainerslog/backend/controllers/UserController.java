@@ -1,13 +1,15 @@
 package com.trainerslog.backend.controllers;
 
-import com.trainerslog.backend.entities.User;
-import com.trainerslog.backend.lib.types.UserLoginCredentials;
+import com.trainerslog.backend.lib.entities.User;
 import com.trainerslog.backend.lib.types.UserRoleAdd;
 import com.trainerslog.backend.lib.utils.ResponseBuilder;
 import com.trainerslog.backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController()
 @RequestMapping("/api/user")
@@ -16,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<?> getUsers() {
         return ResponseBuilder.ok(this.userService.getUsers());
     }
@@ -27,15 +29,14 @@ public class UserController {
         return ResponseBuilder.created();
     }
 
-    //TODO: implement this in TLB-4 and also add tests
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserLoginCredentials userLoginCredentials) {
-        return ResponseBuilder.ok("Will be implemented with");
-    }
-
     @PostMapping("/addRole")
     public ResponseEntity<?> addRoleToUser(@RequestBody UserRoleAdd userRoleAdd) {
         this.userService.addRoleToUser(userRoleAdd.userName(), userRoleAdd.roleName());
         return ResponseBuilder.ok(String.format("Successfully added role %s to %s", userRoleAdd.userName(), userRoleAdd.roleName()));
+    }
+
+    @PostMapping("/refreshToken")
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        userService.refreshToken(request, response);
     }
 }

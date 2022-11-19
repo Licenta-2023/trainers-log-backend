@@ -1,6 +1,6 @@
 package com.trainerslog.backend.controllers;
 
-import com.trainerslog.backend.entities.Role;
+import com.trainerslog.backend.lib.entities.Role;
 import com.trainerslog.backend.lib.utils.ResponseBuilder;
 import com.trainerslog.backend.services.RoleService;
 import lombok.RequiredArgsConstructor;

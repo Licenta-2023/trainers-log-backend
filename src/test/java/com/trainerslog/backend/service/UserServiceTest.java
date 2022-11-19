@@ -1,23 +1,26 @@
 package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.entities.Role;
-import com.trainerslog.backend.entities.User;
-import com.trainerslog.backend.exception.DuplicateUserRoleException;
-import com.trainerslog.backend.exception.NotFoundException;
+import com.trainerslog.backend.lib.entities.Role;
+import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
+import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.types.UserRoles;
-import com.trainerslog.backend.repositories.RoleRepository;
-import com.trainerslog.backend.repositories.UserRepository;
+import com.trainerslog.backend.lib.repositories.RoleRepository;
+import com.trainerslog.backend.lib.repositories.UserRepository;
 import com.trainerslog.backend.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,6 +38,9 @@ class UserServiceTest {
     @MockBean
     private RoleRepository roleRepository;
 
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
     private User emptyUser;
 
     private Role emptyRole;
@@ -46,10 +52,53 @@ class UserServiceTest {
     }
 
     @Test
+    void testLoadUserByUsernameWithoutRoles() {
+        User user = new User();
+        user.setUsername("some-username");
+        user.setPassword("some-password");
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+
+        assertEquals(userDetails, userService.loadUserByUsername("some-username"));
+        verify(userRepository, times(1)).findByUsername(anyString());
+    }
+
+    @Test
+    void testLoadUserByUsernameWithRoles() {
+        User user = new User();
+        user.setUsername("some-username");
+        user.setPassword("some-password");
+        Role userRole = new Role(null, UserRoles.USER);
+        Role trainerRole = new Role(null, UserRoles.TRAINER);
+        user.getRoles().add(userRole);
+        user.getRoles().add(trainerRole);
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthoritiesForUser(user));
+
+        assertEquals(userDetails, userService.loadUserByUsername("some-username"));
+        verify(userRepository, times(1)).findByUsername(anyString());
+    }
+
+    @Test
+    void testLoadUserByUsernameThrowsNotFoundException() {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
+        String username = "invalid-user";
+        String expectedMessage = String.format("User %s not found in the database.", username);
+
+        Exception exception = assertThrows(NotFoundException.class, () -> userService.loadUserByUsername(username));
+        verify(userRepository, times(1)).findByUsername(anyString());
+        assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    @Test
     void testCreateUser() {
         when(userRepository.save(any())).thenReturn(emptyUser);
+        when(passwordEncoder.encode(any())).thenReturn(emptyUser.getPassword());
         assertEquals(emptyUser, userService.createUser(emptyUser));
         verify(userRepository, times(1)).save(any());
+        verify(passwordEncoder, times(1)).encode(any());
     }
 
     @Test
@@ -176,5 +225,11 @@ class UserServiceTest {
         verify(userRepository, times(1)).findByUsername(anyString());
         verify(roleRepository, times(1)).findByName(any());
         assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    private Collection<SimpleGrantedAuthority> getAuthoritiesForUser(User user) {
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
+                .collect(Collectors.toList());
     }
 }
