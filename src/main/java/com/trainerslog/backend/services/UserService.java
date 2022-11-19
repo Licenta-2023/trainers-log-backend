@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found in the database."));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
         log.info("User found in the database {}.", username);
         Collection<SimpleGrantedAuthority> authorities = getAuthoritiesForUser(user);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
@@ -99,7 +99,7 @@ public class UserService implements UserDetailsService {
     }
 
     private User getUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format("User with username %s not found", username)));
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User with username %s not found", username)));
     }
 
     private Collection<SimpleGrantedAuthority> getAuthoritiesForUser(User user) {

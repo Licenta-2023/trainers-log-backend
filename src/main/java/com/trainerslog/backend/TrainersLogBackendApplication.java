@@ -17,21 +17,22 @@ public class TrainersLogBackendApplication {
 		SpringApplication.run(TrainersLogBackendApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner run(UserService userService, RoleService roleService) {
-		return args -> {
-			try {
-				User admin = new User();
-				admin.setUsername("Daci");
-				admin.setPassword("Daci123");
-				userService.createUser(admin);
-
-				roleService.createRole(new Role(null, UserRoles.ADMIN));
-
-				userService.addRoleToUser("Daci", "ADMIN");
-			} catch (Exception ignored) {}
-
-		};
-	}
+	//TODO: remove this in the future
+//	@Bean
+//	CommandLineRunner run(UserService userService, RoleService roleService) {
+//		return args -> {
+//			try {
+//				User admin = new User();
+//				admin.setUsername("Daci");
+//				admin.setPassword("Daci123");
+//				userService.createUser(admin);
+//
+//				roleService.createRole(new Role(null, UserRoles.ADMIN));
+//
+//				userService.addRoleToUser("Daci", "ADMIN");
+//			} catch (Exception ignored) {}
+//
+//		};
+//	}
 
 }

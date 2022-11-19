@@ -1,11 +1,13 @@
 package com.trainerslog.backend.lib.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class SecurityConstants {
-    private static final byte[] secret = "secret".getBytes();
+    private static final String secret = System.getenv("SECRET_KEY");
 
     private static final Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.getSecret());
 
@@ -27,7 +29,7 @@ public class SecurityConstants {
     };
 
     public static byte[] getSecret() {
-        return secret;
+        return secret.getBytes();
     }
 
     public static Algorithm getAlgorithm() {
