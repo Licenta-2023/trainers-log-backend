@@ -1,7 +1,7 @@
-package com.trainerslog.backend.lib.utils;
+package com.trainerslog.backend.lib.util;
 
-import com.trainerslog.backend.lib.entities.Role;
-import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;

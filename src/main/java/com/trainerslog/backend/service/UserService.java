@@ -1,7 +1,7 @@
-package com.trainerslog.backend.services;
+package com.trainerslog.backend.service;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.trainerslog.backend.lib.entities.Role;
-import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
@@ -49,7 +49,8 @@ public class UserService implements UserDetailsService {
     public User createUser(User user) {
         log.info("Creating user {}.", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+
+        return  userRepository.save(user);
     }
 
     public List<User> getUsers() {

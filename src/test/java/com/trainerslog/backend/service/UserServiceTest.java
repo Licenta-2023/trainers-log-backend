@@ -1,13 +1,12 @@
 package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.lib.entities.Role;
-import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.types.UserRoles;
 import com.trainerslog.backend.lib.repositories.RoleRepository;
 import com.trainerslog.backend.lib.repositories.UserRepository;
-import com.trainerslog.backend.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

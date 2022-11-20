@@ -1,8 +1,7 @@
 package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.lib.entities.Role;
+import com.trainerslog.backend.lib.entity.Role;
 import com.trainerslog.backend.lib.repositories.RoleRepository;
-import com.trainerslog.backend.services.RoleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

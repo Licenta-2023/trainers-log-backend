@@ -1,4 +1,4 @@
-package com.trainerslog.backend.lib.security.filter;
+package com.trainerslog.backend.lib.security.filter.security;
 
 import com.trainerslog.backend.lib.security.SecurityUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
