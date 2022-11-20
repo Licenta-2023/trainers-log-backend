@@ -1,7 +1,7 @@
-package com.trainerslog.backend.services;
+package com.trainerslog.backend.service;
 
-import com.trainerslog.backend.lib.entities.Role;
-import com.trainerslog.backend.lib.repositories.RoleRepository;
+import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
-package com.trainerslog.backend.controllers;
+package com.trainerslog.backend.controller;
 
-import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.types.UserRoleAdd;
-import com.trainerslog.backend.services.UserService;
+import com.trainerslog.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -62,7 +62,7 @@ class UserControllerTest {
         String username = "some-username";
         String roleName = "some-role";
         UserRoleAdd userRoleAdd = new UserRoleAdd(username, roleName);
-        assertEquals(ResponseEntity.ok().body(String.format("Successfully added role %s to %s", userRoleAdd.userName(), userRoleAdd.roleName())), userController.addRoleToUser(userRoleAdd));
+        assertEquals(ResponseEntity.ok().body(String.format("Successfully added role %s to %s", userRoleAdd.username(), userRoleAdd.roleName())), userController.addRoleToUser(userRoleAdd));
         verify(userService, times(1)).addRoleToUser(any(), any());
     }
 

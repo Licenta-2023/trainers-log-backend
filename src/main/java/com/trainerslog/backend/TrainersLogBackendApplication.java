@@ -1,14 +1,16 @@
 package com.trainerslog.backend;
 
-import com.trainerslog.backend.lib.entities.Role;
-import com.trainerslog.backend.lib.entities.User;
+import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.types.UserRoles;
-import com.trainerslog.backend.services.RoleService;
-import com.trainerslog.backend.services.UserService;
+import com.trainerslog.backend.service.RoleService;
+import com.trainerslog.backend.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.time.LocalDate;
 
 @SpringBootApplication
 public class TrainersLogBackendApplication {

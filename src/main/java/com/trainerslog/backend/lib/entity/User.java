@@ -1,4 +1,4 @@
-package com.trainerslog.backend.lib.entities;
+package com.trainerslog.backend.lib.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,22 +27,27 @@ public class User {
     private Long id;
 
     @Column(unique = true)
+    @NotEmpty(message = "Username cannot be empty")
     private String username;
 
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
 
+    @NotEmpty(message = "First name cannot be empty")
     private String firstName;
 
+    @NotEmpty(message = "Last name cannot be empty")
     private String lastName;
 
     @JsonFormat(pattern="dd-MM-yyyy")
+    @NotNull(message = "DOB cannot be null")
     private LocalDate dob;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"),
             uniqueConstraints = { @UniqueConstraint(columnNames = {"role_id", "user_id"}) }
     )
     @JsonIgnore
