@@ -1,4 +1,4 @@
-package com.trainerslog.backend.lib.entities;
+package com.trainerslog.backend.lib.entity;
 
 import com.trainerslog.backend.lib.types.UserRoles;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -21,5 +22,6 @@ public class Role {
 
     @Enumerated
     @Column(unique = true)
+    @NotNull(message = "Role name cannot be empty")
     private UserRoles name;
 }

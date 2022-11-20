@@ -1,7 +1,8 @@
 package com.trainerslog.backend.lib.security;
 
-import com.trainerslog.backend.lib.security.filter.CustomAuthenticationFilter;
-import com.trainerslog.backend.lib.security.filter.CustomAuthorizationFilter;
+import com.trainerslog.backend.lib.security.filter.security.CustomAuthenticationFilter;
+import com.trainerslog.backend.lib.security.filter.security.CustomAuthorizationFilter;
+import com.trainerslog.backend.lib.security.filter.rest.ValidateLoginDataFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new ValidateLoginDataFilter(), CustomAuthenticationFilter.class);
+
     }
 
     @Bean

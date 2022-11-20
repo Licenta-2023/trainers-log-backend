@@ -1,6 +1,6 @@
-package com.trainerslog.backend.lib.repositories;
+package com.trainerslog.backend.lib.repository;
 
-import com.trainerslog.backend.lib.entities.Role;
+import com.trainerslog.backend.lib.entity.Role;
 import com.trainerslog.backend.lib.types.UserRoles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

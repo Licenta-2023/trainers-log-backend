@@ -1,3 +1,10 @@
 package com.trainerslog.backend.lib.types;
 
-public record UserRoleAdd (String userName, String roleName) {}
+import javax.validation.constraints.NotBlank;
+
+public record UserRoleAdd (
+        @NotBlank(message = "Username cannot be empty")
+        String username,
+        @NotBlank(message = "Role name cannot be empty")
+        String roleName
+) {}
