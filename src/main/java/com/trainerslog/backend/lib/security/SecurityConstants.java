@@ -11,7 +11,7 @@ public class SecurityConstants {
 
     private static final Algorithm algorithm = Algorithm.HMAC256(SecurityConstants.getSecret());
 
-    private static final Integer accessTokenExpirationMinutes = 10;
+    private static final Integer accessTokenExpirationMinutes = 60;
 
     private static final Integer refreshTokenExpirationMinutes = 60;
 
@@ -21,11 +21,12 @@ public class SecurityConstants {
     };
 
     private static final String[] permittedToTrainer = {
-
+            "/api/trainer/**"
     };
 
     private static final String[] permittedToUser = {
-            "/api/user/refreshToken"
+            "/api/user/refreshToken",
+            "api/reservation"
     };
 
     public static byte[] getSecret() {

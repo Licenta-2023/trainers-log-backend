@@ -8,6 +8,10 @@ public class ResponseBuilder {
         return ResponseEntity.ok().body(body);
     }
 
+    public static ResponseEntity<?> ok() {
+        return ResponseEntity.ok().build();
+    }
+
     public static ResponseEntity<?> created() {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

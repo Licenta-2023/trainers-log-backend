@@ -1,10 +1,12 @@
 package com.trainerslog.backend.service;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
+import com.trainerslog.backend.lib.repository.TrainerRepository;
 import com.trainerslog.backend.lib.security.SecurityUtils;
 import com.trainerslog.backend.lib.types.UserRoles;
 import com.trainerslog.backend.lib.repository.RoleRepository;
@@ -35,6 +37,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
+
+    private final TrainerRepository trainerRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -68,6 +72,9 @@ public class UserService implements UserDetailsService {
         }
         log.info("Adding role {} to user {}.", roleName, username);
         user.getRoles().add(role);
+        if(role.getName().equals(UserRoles.TRAINER)) {
+            createTrainerWithoutPresence(user);
+        }
     }
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -107,5 +114,11 @@ public class UserService implements UserDetailsService {
         return user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
                 .collect(Collectors.toList());
+    }
+
+    private void createTrainerWithoutPresence(User user) {
+        Trainer trainer = new Trainer();
+        trainer.setUser(user);
+        trainerRepository.save(trainer);
     }
 }

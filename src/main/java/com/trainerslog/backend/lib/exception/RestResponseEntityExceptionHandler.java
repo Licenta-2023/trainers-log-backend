@@ -24,15 +24,17 @@ public class RestResponseEntityExceptionHandler {
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = ClientException.class)
-    protected void handleClientException() {}
+    protected ResponseEntity<?> handleClientException(Exception exception) {
+        return ResponseBuilder.badRequest(exception.getMessage());
+    }
 
     @ExceptionHandler(value = ResponseStatusException.class)
     protected ResponseEntity<?> handleAccessDenied() {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(value = DuplicateUserRoleException.class)
-    protected ResponseEntity<?> handleDuplicateUserRoleException(RuntimeException exception) {
+    @ExceptionHandler(value = { DuplicateUserRoleException.class, ReservationExistsException.class})
+    protected ResponseEntity<?> handleDuplicateExceptions(RuntimeException exception) {
         return ResponseBuilder.conflict(exception.getMessage());
     }
 
