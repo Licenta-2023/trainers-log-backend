@@ -1,9 +1,11 @@
 package com.trainerslog.backend.service;
 
 import com.trainerslog.backend.lib.entity.Role;
+import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
+import com.trainerslog.backend.lib.repository.TrainerRepository;
 import com.trainerslog.backend.lib.types.UserRoles;
 import com.trainerslog.backend.lib.repository.RoleRepository;
 import com.trainerslog.backend.lib.repository.UserRepository;
@@ -40,6 +42,9 @@ class UserServiceTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
+    @MockBean
+    private TrainerRepository trainerRepository;
+
     private User emptyUser;
 
     private Role emptyRole;
@@ -73,7 +78,6 @@ class UserServiceTest {
         user.getRoles().add(userRole);
         user.getRoles().add(trainerRole);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
-
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthoritiesForUser(user));
 
         assertEquals(userDetails, userService.loadUserByUsername("some-username"));
@@ -95,9 +99,17 @@ class UserServiceTest {
     void testCreateUser() {
         when(userRepository.save(any())).thenReturn(emptyUser);
         when(passwordEncoder.encode(any())).thenReturn(emptyUser.getPassword());
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(emptyUser));
+
+        Role role = new Role();
+        role.setName(UserRoles.USER);
+        when(roleRepository.findByName(any())).thenReturn(Optional.of(role));
+
         assertEquals(emptyUser, userService.createUser(emptyUser));
         verify(userRepository, times(1)).save(any());
         verify(passwordEncoder, times(1)).encode(any());
+        verify(userRepository, times(1)).findByUsername(any());
+        verify(roleRepository, times(1)).findByName(any());
     }
 
     @Test
@@ -116,8 +128,11 @@ class UserServiceTest {
         Role role = new Role();
         role.setName(userRole);
         User user = new User();
+        user.setUsername("userName");
+        user.setPassword("somePassword");
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
         when(roleRepository.findByName(any())).thenReturn(Optional.of(role));
+        when(trainerRepository.save(any())).thenReturn(new Trainer());
 
         userService.addRoleToUser(username, roleName);
 
