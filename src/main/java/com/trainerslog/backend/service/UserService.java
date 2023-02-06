@@ -50,11 +50,15 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
+    @Transactional
     public User createUser(User user) {
         log.info("Creating user {}.", user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User newUser = userRepository.save(user);
 
-        return  userRepository.save(user);
+        this.addRoleToUser(user.getUsername(), UserRoles.USER.toString());
+
+        return newUser;
     }
 
     public List<User> getUsers() {
