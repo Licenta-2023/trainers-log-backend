@@ -6,6 +6,7 @@ import com.trainerslog.backend.lib.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,6 +53,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("access_token", accessToken);
         tokens.put("refresh_token", refreshToken);
         SecurityUtils.writeToResponseBody(response, tokens);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        String errorClass = failed.getCause() == null ? failed.getClass().getSimpleName() : failed.getCause().getClass().getSimpleName();
+        Map<String, String> errorMap = Map.of(
+                "error_message", failed.getMessage(),
+                "error_class", errorClass
+        );
+        SecurityUtils.writeToResponseBody(response, errorMap);
     }
 
 }
