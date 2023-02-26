@@ -29,7 +29,7 @@ public class Trainer {
     private LocalTime endOfDay;
 
     @Column(columnDefinition = "integer default 1")
-    private Integer totalClientsPerReservation;
+    private Integer totalClientsPerReservation = 1;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

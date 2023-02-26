@@ -1,13 +1,17 @@
 package com.trainerslog.backend.lib.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.trainerslog.backend.lib.types.ReservationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,13 +27,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
+    @JsonSerialize(using = UserSerializer.class)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     private User client;
 
-    @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonSerialize(using = TrainerSerializer.class)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     private Trainer trainer;
 
@@ -39,4 +43,20 @@ public class Reservation {
 
     @Enumerated
     private ReservationType reservationType;
+
+    static class UserSerializer extends JsonSerializer<User> {
+        @Override
+        @JsonSerialize()
+        public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+            jsonGenerator.writeString(user.getUsername());
+        }
+    }
+
+    static class TrainerSerializer extends JsonSerializer<Trainer> {
+        @Override
+        @JsonSerialize()
+        public void serialize(Trainer trainer, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+            jsonGenerator.writeString(trainer.getUser().getUsername());
+        }
+    }
 }

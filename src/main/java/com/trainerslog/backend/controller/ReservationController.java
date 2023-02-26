@@ -30,4 +30,38 @@ public class ReservationController {
         reservationService.deleteReservation(reservationRequest, authorization);
         return ResponseBuilder.ok();
     }
+
+    @GetMapping("/users/{username}/months/{month}")
+    public ResponseEntity<?> getReservationsForUserByMonth(
+            @PathVariable("username") String username,
+            @PathVariable("month") Integer month
+    ) {
+       return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForUser(username, month));
+    }
+
+    @GetMapping("/users/{username}/months/{month}/days/{day}")
+    public ResponseEntity<?> getReservationsForUserByMonthAndDay(
+            @PathVariable("username") String username,
+            @PathVariable("month") Integer month,
+            @PathVariable("day") Integer day
+    ) {
+       return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForUser(username, month, day));
+    }
+
+    @GetMapping("/trainers/{username}/months/{month}")
+    public ResponseEntity<?> getReservationsForTrainerByMonth(
+            @PathVariable("username") String username,
+            @PathVariable("month") Integer month
+    ) {
+        return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForTrainer(username, month));
+    }
+
+    @GetMapping("/trainers/{username}/months/{month}/days/{day}")
+    public ResponseEntity<?> getReservationsForTrainerByMonthAndDay(
+            @PathVariable("username") String username,
+            @PathVariable("month") Integer month,
+            @PathVariable("day") Integer day
+    ) {
+        return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForTrainer(username, month, day));
+    }
 }

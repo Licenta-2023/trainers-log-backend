@@ -16,8 +16,6 @@ import com.trainerslog.backend.lib.types.UserRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -52,7 +50,6 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    @Transactional
     public void deleteReservation(ReservationRequest reservationRequest, String authorization) {
         String token = authorization.substring("Bearer ".length());
         DecodedJWT decodedJWT = SecurityUtils.decodeJWT(token);
@@ -144,5 +141,21 @@ public class ReservationService {
         if (reservationIsAlreadyHasBlocker) {
             throw new ClientException(String.format("Trainer %s has a blocker for the interval %s", reservationRequest.trainerUsername(), truncatedByHoursTimeIntervalBegin));
         }
+    }
+
+    public List<Reservation> getCurrentMonthReservationsForUser(String username, Integer month) {
+        return reservationRepository.findReservationsForUserByMonth(username, month);
+    }
+
+    public List<Reservation> getCurrentDayReservationsForUser(String username, Integer month, Integer day) {
+        return reservationRepository.findReservationsForUserByMonthAndDay(username, month, day);
+    }
+
+    public List<Reservation> getCurrentMonthReservationsForTrainer(String username, Integer month) {
+        return reservationRepository.findReservationsForTrainerByMonth(username, month);
+    }
+
+    public List<Reservation> getCurrentDayReservationsForTrainer(String username, Integer month, Integer day) {
+        return reservationRepository.findReservationsForTrainerByMonthAndDay(username, month, day);
     }
 }
