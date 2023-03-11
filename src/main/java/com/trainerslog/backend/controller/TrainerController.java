@@ -36,4 +36,9 @@ public class TrainerController {
         trainerService.setTotalClientsPerSessionForTrainer(trainerUsername, totalClients);
         return ResponseBuilder.ok();
     }
+
+    @GetMapping("/usernames")
+    public ResponseEntity<?> getAllUsernamesForTrainers() {
+        return ResponseBuilder.ok(trainerService.getAllUsernamesForTrainers());
+    }
 }

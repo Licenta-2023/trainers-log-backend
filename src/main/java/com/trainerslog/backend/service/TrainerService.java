@@ -4,9 +4,12 @@ import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
+import com.trainerslog.backend.lib.types.TrainerFullNameAndUsername;
 import com.trainerslog.backend.lib.types.TrainerPresence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +35,9 @@ public class TrainerService {
         trainer.setTotalClientsPerReservation(totalClients);
 
         trainerRepository.save(trainer);
+    }
+
+    public List<TrainerFullNameAndUsername> getAllUsernamesForTrainers() {
+        return trainerRepository.findAllUsernamesForTrainers();
     }
 }

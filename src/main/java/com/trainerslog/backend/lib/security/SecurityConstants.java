@@ -26,9 +26,10 @@ public class SecurityConstants {
 
     private static final String[] permittedToUser = {
             "/api/user/refreshToken",
-            "api/reservation",
-            "api/reservation/users/*/months/*",
-            "api/reservation/users/*/months/*/days/*",
+            "/api/reservation",
+            "/api/reservation/users/*/months/*",
+            "/api/reservation/users/*/months/*/days/*",
+            "/api/trainer/usernames"
     };
 
     public static byte[] getSecret() {
