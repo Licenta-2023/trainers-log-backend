@@ -41,4 +41,9 @@ public class TrainerController {
     public ResponseEntity<?> getAllUsernamesForTrainers() {
         return ResponseBuilder.ok(trainerService.getAllUsernamesForTrainers());
     }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getTrainer(@PathVariable("username") String username) {
+        return ResponseBuilder.ok(trainerService.getTrainer(username));
+    }
 }

@@ -29,7 +29,8 @@ public class SecurityConstants {
             "/api/reservation",
             "/api/reservation/users/*/months/*",
             "/api/reservation/users/*/months/*/days/*",
-            "/api/trainer/usernames"
+            "/api/trainer/usernames",
+            "/api/trainer/*"
     };
 
     public static byte[] getSecret() {
