@@ -31,37 +31,41 @@ public class ReservationController {
         return ResponseBuilder.ok();
     }
 
-    @GetMapping("/users/{username}/months/{month}")
+    @GetMapping("/users/{username}/years/{year}/months/{month}")
     public ResponseEntity<?> getReservationsForUserByMonth(
             @PathVariable("username") String username,
+            @PathVariable("year") Integer year,
             @PathVariable("month") Integer month
     ) {
-       return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForUser(username, month));
+       return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForUser(username, year, month));
     }
 
-    @GetMapping("/users/{username}/months/{month}/days/{day}")
+    @GetMapping("/users/{username}/years/{year}/months/{month}/days/{day}")
     public ResponseEntity<?> getReservationsForUserByMonthAndDay(
             @PathVariable("username") String username,
+            @PathVariable("year") Integer year,
             @PathVariable("month") Integer month,
             @PathVariable("day") Integer day
     ) {
-       return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForUser(username, month, day));
+       return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForUser(username, year, month, day));
     }
 
-    @GetMapping("/trainers/{username}/months/{month}")
+    @GetMapping("/trainers/{username}/years/{year}/months/{month}")
     public ResponseEntity<?> getReservationsForTrainerByMonth(
             @PathVariable("username") String username,
+            @PathVariable("year") Integer year,
             @PathVariable("month") Integer month
     ) {
-        return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForTrainer(username, month));
+        return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForTrainer(username, year, month));
     }
 
-    @GetMapping("/trainers/{username}/months/{month}/days/{day}")
+    @GetMapping("/trainers/{username}/years/{year}months/{month}/days/{day}")
     public ResponseEntity<?> getReservationsForTrainerByMonthAndDay(
             @PathVariable("username") String username,
+            @PathVariable("year") Integer year,
             @PathVariable("month") Integer month,
             @PathVariable("day") Integer day
     ) {
-        return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForTrainer(username, month, day));
+        return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForTrainer(username, year, month, day));
     }
 }

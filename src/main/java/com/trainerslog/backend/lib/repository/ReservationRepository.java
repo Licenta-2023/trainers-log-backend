@@ -19,21 +19,21 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("select r from Reservation r " +
             "join User u on r.client = u " +
-            "where r.client.username = :username and month(r.timeIntervalBegin) = :month")
-    List<Reservation> findReservationsForUserByMonth(String username, int month);
+            "where r.client.username = :username and month(r.timeIntervalBegin) = :month and year(r.timeIntervalBegin) = :year")
+    List<Reservation> findReservationsForUserByMonth(String username, int year, int month);
 
     @Query("select r from Reservation r " +
             "join User u on r.client = u " +
-            "where r.client.username = :username and month(r.timeIntervalBegin) = :month and day(r.timeIntervalBegin) = :day")
-    List<Reservation> findReservationsForUserByMonthAndDay(String username, int month, int day);
+            "where r.client.username = :username and month(r.timeIntervalBegin) = :month and day(r.timeIntervalBegin) = :day and year(r.timeIntervalBegin) = :year")
+    List<Reservation> findReservationsForUserByMonthAndDay(String username, int year, int month, int day);
 
     @Query("select r from Reservation r " +
             "join User u on r.client = u " +
-            "where r.trainer.user.username = :username and month(r.timeIntervalBegin) = :month")
-    List<Reservation> findReservationsForTrainerByMonth(String username, int month);
+            "where r.trainer.user.username = :username and month(r.timeIntervalBegin) = :month and year(r.timeIntervalBegin) = :year")
+    List<Reservation> findReservationsForTrainerByMonth(String username, int year, int month);
 
     @Query("select r from Reservation r " +
             "join User u on r.client = u " +
-            "where r.trainer.user.username = :username and month(r.timeIntervalBegin) = :month and day(r.timeIntervalBegin) = :day")
-    List<Reservation> findReservationsForTrainerByMonthAndDay(String username, int month, int day);
+            "where r.trainer.user.username = :username and month(r.timeIntervalBegin) = :month and day(r.timeIntervalBegin) = :day and year(r.timeIntervalBegin) = :year")
+    List<Reservation> findReservationsForTrainerByMonthAndDay(String username, int year, int month, int day);
 }

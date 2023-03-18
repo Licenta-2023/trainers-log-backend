@@ -21,14 +21,15 @@ public class SecurityConstants {
     };
 
     private static final String[] permittedToTrainer = {
-            "/api/trainer/**"
+            "/api/trainer/**",
+            "/api/reservation/trainers/**"
     };
 
     private static final String[] permittedToUser = {
             "/api/user/refreshToken",
             "/api/reservation",
-            "/api/reservation/users/*/months/*",
-            "/api/reservation/users/*/months/*/days/*",
+            "/api/reservation/users/*/years/*/months/*",
+            "/api/reservation/users/*/years/*/months/*/days/*",
             "/api/trainer/usernames",
             "/api/trainer/*"
     };
