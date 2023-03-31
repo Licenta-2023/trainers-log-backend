@@ -59,7 +59,7 @@ public class ReservationController {
         return ResponseBuilder.ok(reservationService.getCurrentMonthReservationsForTrainer(username, year, month));
     }
 
-    @GetMapping("/trainers/{username}/years/{year}months/{month}/days/{day}")
+    @GetMapping("/trainers/{username}/years/{year}/months/{month}/days/{day}")
     public ResponseEntity<?> getReservationsForTrainerByMonthAndDay(
             @PathVariable("username") String username,
             @PathVariable("year") Integer year,
