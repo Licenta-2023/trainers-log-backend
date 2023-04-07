@@ -30,6 +30,8 @@ public class SecurityConstants {
             "/api/reservation",
             "/api/reservation/users/*/years/*/months/*",
             "/api/reservation/users/*/years/*/months/*/days/*",
+            "/api/reservation/trainers/*/years/*/months/*/days/*",
+            "/api/reservation/trainers/*/years/*/months/*",
             "/api/trainer/usernames",
             "/api/trainer/*"
     };
