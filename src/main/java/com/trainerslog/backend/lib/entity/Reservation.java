@@ -48,7 +48,10 @@ public class Reservation {
         @Override
         @JsonSerialize()
         public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            jsonGenerator.writeString(user.getUsername());
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("username", user.getUsername());
+            jsonGenerator.writeStringField("fullName", user.getFirstName() + " " + user.getLastName());
+            jsonGenerator.writeEndObject();
         }
     }
 
@@ -56,7 +59,10 @@ public class Reservation {
         @Override
         @JsonSerialize()
         public void serialize(Trainer trainer, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-            jsonGenerator.writeString(trainer.getUser().getUsername());
+            jsonGenerator.writeStartObject();
+            jsonGenerator.writeStringField("username", trainer.getUser().getUsername());
+            jsonGenerator.writeStringField("fullName", trainer.getUser().getFirstName() + " " + trainer.getUser().getLastName());
+            jsonGenerator.writeEndObject();
         }
     }
 }
