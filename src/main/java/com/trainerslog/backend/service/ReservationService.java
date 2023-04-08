@@ -16,9 +16,8 @@ import com.trainerslog.backend.lib.types.UserRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -52,7 +51,6 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    @Transactional
     public void deleteReservation(ReservationRequest reservationRequest, String authorization) {
         String token = authorization.substring("Bearer ".length());
         DecodedJWT decodedJWT = SecurityUtils.decodeJWT(token);
@@ -99,11 +97,19 @@ public class ReservationService {
 
         throwIfReservationAlreadyExistAndNewOneIsBlocker(trainerReservationsAtGivenMoment, reservationRequest);
 
+        throwIfOutsideWorkingHours(truncatedByHoursTimeIntervalBegin.toLocalTime(), trainer);
+
         if (trainerReservationsAtGivenMoment.size() >= trainer.getTotalClientsPerReservation()) {
             throw new ClientException(String.format("Trainer %s is fully booked for the interval %s", reservationRequest.trainerUsername(), truncatedByHoursTimeIntervalBegin));
         }
 
         checkForDuplicateReservation(reservationRequest, truncatedByHoursTimeIntervalBegin, trainerReservationsAtGivenMoment);
+    }
+
+    private void throwIfOutsideWorkingHours(LocalTime reservationBegin, Trainer trainer) {
+        if( reservationBegin.compareTo(trainer.getStartOfDay()) < 0 || reservationBegin.compareTo(trainer.getEndOfDay()) >= 0) {
+            throw new ClientException(String.format("Invalid reservation time: %s", reservationBegin));
+        }
     }
 
     private void checkForDuplicateReservation(ReservationRequest reservationRequest, LocalDateTime truncatedByHoursTimeIntervalBegin, List<Reservation> trainerReservationsAtGivenMoment) {
@@ -144,5 +150,21 @@ public class ReservationService {
         if (reservationIsAlreadyHasBlocker) {
             throw new ClientException(String.format("Trainer %s has a blocker for the interval %s", reservationRequest.trainerUsername(), truncatedByHoursTimeIntervalBegin));
         }
+    }
+
+    public List<Reservation> getCurrentMonthReservationsForUser(String username, Integer year, Integer month) {
+        return reservationRepository.findReservationsForUserByMonth(username, year, month);
+    }
+
+    public List<Reservation> getCurrentDayReservationsForUser(String username, Integer year, Integer month, Integer day) {
+        return reservationRepository.findReservationsForUserByMonthAndDay(username, year, month, day);
+    }
+
+    public List<Reservation> getCurrentMonthReservationsForTrainer(String username, Integer year, Integer month) {
+        return reservationRepository.findReservationsForTrainerByMonth(username, year, month);
+    }
+
+    public List<Reservation> getCurrentDayReservationsForTrainer(String username, Integer year, Integer month, Integer day) {
+        return reservationRepository.findReservationsForTrainerByMonthAndDay(username, year, month, day);
     }
 }

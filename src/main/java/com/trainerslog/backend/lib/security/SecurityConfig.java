@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -59,17 +58,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        // Endpoints permitted only to ADMIN
+        http.authorizeHttpRequests()
+                .antMatchers(SecurityConstants.getPermittedToAdmin()).hasAuthority("ADMIN");
+
+        // Endpoints permitted only to USER
+        http.authorizeHttpRequests()
+                .antMatchers(SecurityConstants.getAllowedRequestToUser()).hasAnyAuthority("USER", "TRAINER", "ADMIN");
+
         // Endpoints permitted to all request
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToAll()).permitAll();
 
-        //Endpoints permitted only to TRAINER
+        // Endpoints permitted only to TRAINER
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToTrainer()).hasAnyAuthority("TRAINER", "ADMIN");
 
-        //Endpoints permitted only to USER
-        http.authorizeHttpRequests()
-                .antMatchers(SecurityConstants.getAllowedRequestToUser()).hasAnyAuthority("USER", "TRAINER", "ADMIN");
+
+
+
 
         http.authorizeHttpRequests().anyRequest().authenticated();
 

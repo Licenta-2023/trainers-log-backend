@@ -4,9 +4,12 @@ import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
+import com.trainerslog.backend.lib.types.TrainerFullNameAndUsername;
 import com.trainerslog.backend.lib.types.TrainerPresence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class TrainerService {
         if( truncatedTrainerPresence.startOfDay().compareTo(truncatedTrainerPresence.endOfDay()) >= 0 ) {
             throw new ClientException("Invalid time interval");
         }
-        Trainer trainer = trainerRepository.findByUsername(trainerUsername).orElseThrow(() -> new NotFoundException(String.format("No trainer with username %s found.", trainerUsername)));
+        Trainer trainer = getTrainer(trainerUsername);
         trainer.setStartOfDay(truncatedTrainerPresence.startOfDay());
         trainer.setEndOfDay(truncatedTrainerPresence.endOfDay());
 
@@ -27,10 +30,18 @@ public class TrainerService {
     }
 
     public void setTotalClientsPerSessionForTrainer(String trainerUsername, Integer totalClients) {
-        Trainer trainer = trainerRepository.findByUsername(trainerUsername).orElseThrow(() -> new NotFoundException(String.format("No trainer with username %s found.", trainerUsername)));
+        Trainer trainer = getTrainer(trainerUsername);
 
         trainer.setTotalClientsPerReservation(totalClients);
 
         trainerRepository.save(trainer);
+    }
+
+    public List<TrainerFullNameAndUsername> getAllUsernamesForTrainers() {
+        return trainerRepository.findAllUsernamesForTrainers();
+    }
+
+    public Trainer getTrainer(String username) {
+        return trainerRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("No trainer with username %s found.", username)));
     }
 }

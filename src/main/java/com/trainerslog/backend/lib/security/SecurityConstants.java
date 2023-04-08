@@ -21,12 +21,23 @@ public class SecurityConstants {
     };
 
     private static final String[] permittedToTrainer = {
-            "/api/trainer/**"
+            "/api/trainer/**",
+            "/api/reservation/trainers/**"
     };
 
     private static final String[] permittedToUser = {
             "/api/user/refreshToken",
-            "api/reservation"
+            "/api/reservation",
+            "/api/reservation/users/*/years/*/months/*",
+            "/api/reservation/users/*/years/*/months/*/days/*",
+            "/api/reservation/trainers/*/years/*/months/*/days/*",
+            "/api/reservation/trainers/*/years/*/months/*",
+            "/api/trainer/usernames",
+            "/api/trainer/*"
+    };
+
+    private static final String[] permittedToAdmin = {
+            "/api/user"
     };
 
     public static byte[] getSecret() {
@@ -55,5 +66,9 @@ public class SecurityConstants {
 
     public static String[] getAllowedRequestToUser() {
         return permittedToUser;
+    }
+
+    public static String[] getPermittedToAdmin() {
+        return permittedToAdmin;
     }
 }
