@@ -36,6 +36,10 @@ public class SecurityConstants {
             "/api/trainer/*"
     };
 
+    private static final String[] permittedToAdmin = {
+            "/api/user"
+    };
+
     public static byte[] getSecret() {
         return secret.getBytes();
     }
@@ -62,5 +66,9 @@ public class SecurityConstants {
 
     public static String[] getAllowedRequestToUser() {
         return permittedToUser;
+    }
+
+    public static String[] getPermittedToAdmin() {
+        return permittedToAdmin;
     }
 }

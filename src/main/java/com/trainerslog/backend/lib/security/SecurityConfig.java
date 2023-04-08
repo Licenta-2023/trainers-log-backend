@@ -58,7 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        //Endpoints permitted only to USER
+        // Endpoints permitted only to ADMIN
+        http.authorizeHttpRequests()
+                .antMatchers(SecurityConstants.getPermittedToAdmin()).hasAuthority("ADMIN");
+
+        // Endpoints permitted only to USER
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToUser()).hasAnyAuthority("USER", "TRAINER", "ADMIN");
 
@@ -66,9 +70,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToAll()).permitAll();
 
-        //Endpoints permitted only to TRAINER
+        // Endpoints permitted only to TRAINER
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToTrainer()).hasAnyAuthority("TRAINER", "ADMIN");
+
+
 
 
 
