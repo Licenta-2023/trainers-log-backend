@@ -2,7 +2,7 @@ package com.trainerslog.backend.lib.security.filter.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainerslog.backend.lib.exception.ClientException;
-import com.trainerslog.backend.lib.security.SecurityUtils;
+import com.trainerslog.backend.lib.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

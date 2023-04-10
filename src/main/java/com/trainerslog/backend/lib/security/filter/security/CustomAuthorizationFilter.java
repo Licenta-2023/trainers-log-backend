@@ -1,6 +1,6 @@
 package com.trainerslog.backend.lib.security.filter.security;
 
-import com.trainerslog.backend.lib.security.SecurityUtils;
+import com.trainerslog.backend.lib.util.SecurityUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

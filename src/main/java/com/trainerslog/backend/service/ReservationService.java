@@ -1,6 +1,5 @@
 package com.trainerslog.backend.service;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.trainerslog.backend.lib.entity.Reservation;
 import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.entity.User;
@@ -9,10 +8,10 @@ import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.ReservationRepository;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
 import com.trainerslog.backend.lib.repository.UserRepository;
-import com.trainerslog.backend.lib.security.SecurityUtils;
 import com.trainerslog.backend.lib.types.ReservationRequest;
 import com.trainerslog.backend.lib.types.ReservationType;
 import com.trainerslog.backend.lib.types.UserRoles;
+import com.trainerslog.backend.lib.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -52,9 +51,7 @@ public class ReservationService {
     }
 
     public void deleteReservation(ReservationRequest reservationRequest, String authorization) {
-        String token = authorization.substring("Bearer ".length());
-        DecodedJWT decodedJWT = SecurityUtils.decodeJWT(token);
-        String requestUsername = decodedJWT.getSubject();
+        String requestUsername = UserUtils.getUsernameFromBearerToken(authorization);
         validateRequestUserForDeleteReservation(reservationRequest, requestUsername);
 
         LocalDateTime truncatedByHoursTimeIntervalBegin = reservationRequest.timeIntervalBegin().truncatedTo(ChronoUnit.HOURS);

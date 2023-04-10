@@ -5,6 +5,7 @@ import com.trainerslog.backend.lib.util.ResponseBuilder;
 import com.trainerslog.backend.service.TrainerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
@@ -18,6 +19,7 @@ public class TrainerController {
     private final TrainerService trainerService;
 
     @PostMapping("/presence/{trainerUsername}")
+    @PreAuthorize("hasAuthority('TRAINER') or hasAuthority('ADMIN')")
     public ResponseEntity<?> addPresenceToTrainer(
             @RequestBody TrainerPresence trainerPresence,
             @PathVariable("trainerUsername") String trainerUsername
@@ -26,6 +28,7 @@ public class TrainerController {
     }
 
     @PostMapping("/clients/{trainerUsername}")
+    @PreAuthorize("hasAuthority('TRAINER') or hasAuthority('ADMIN')")
     public ResponseEntity<?> changeTrainerTotalClientsPerReservation(
             @PathVariable("trainerUsername") String trainerUsername,
             @RequestParam

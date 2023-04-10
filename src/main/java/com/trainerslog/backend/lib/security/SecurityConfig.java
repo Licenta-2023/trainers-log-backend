@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,6 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private  final UserDetailsService userDetailsService;
@@ -58,21 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Endpoints permitted only to ADMIN
-        http.authorizeHttpRequests()
-                .antMatchers(SecurityConstants.getPermittedToAdmin()).hasAuthority("ADMIN");
-
-        // Endpoints permitted only to USER
-        http.authorizeHttpRequests()
-                .antMatchers(SecurityConstants.getAllowedRequestToUser()).hasAnyAuthority("USER", "TRAINER", "ADMIN");
-
         // Endpoints permitted to all request
         http.authorizeHttpRequests()
                 .antMatchers(SecurityConstants.getAllowedRequestToAll()).permitAll();
-
-        // Endpoints permitted only to TRAINER
-        http.authorizeHttpRequests()
-                .antMatchers(SecurityConstants.getAllowedRequestToTrainer()).hasAnyAuthority("TRAINER", "ADMIN");
 
 
 
