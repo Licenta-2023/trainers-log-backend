@@ -5,6 +5,7 @@ import com.trainerslog.backend.lib.util.ResponseBuilder;
 import com.trainerslog.backend.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createRole(@Valid @RequestBody Role role) {
         this.roleService.createRole(role);
         return ResponseBuilder.created();

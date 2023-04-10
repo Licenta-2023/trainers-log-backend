@@ -16,6 +16,10 @@ public class ResponseBuilder {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    public static ResponseEntity<?> noContent() {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     public static ResponseEntity<?> conflict(Object body) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }

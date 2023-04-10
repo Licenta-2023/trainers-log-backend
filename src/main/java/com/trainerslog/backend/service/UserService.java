@@ -7,10 +7,12 @@ import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
-import com.trainerslog.backend.lib.security.SecurityUtils;
+import com.trainerslog.backend.lib.util.SecurityUtils;
+import com.trainerslog.backend.lib.types.PatchUserRequest;
 import com.trainerslog.backend.lib.types.UserRoles;
 import com.trainerslog.backend.lib.repository.RoleRepository;
 import com.trainerslog.backend.lib.repository.UserRepository;
+import com.trainerslog.backend.lib.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -66,6 +68,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
+    public User getUser(String username, String bearerToken) {
+        if (UserUtils.getRoleFromBearerToken(bearerToken).stream().noneMatch(role -> role.equals("ADMIN"))) {
+            UserUtils.throwIfRequestUserTheSameAsTargetUser(username, bearerToken);
+        }
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
+    }
+
     @Transactional
     public void addRoleToUser(String username, String roleName) {
         User user = getUser(username);
@@ -79,6 +88,29 @@ public class UserService implements UserDetailsService {
         if(role.getName().equals(UserRoles.TRAINER)) {
             createTrainerWithoutPresence(user);
         }
+    }
+
+    @Transactional
+    public void patchUser(PatchUserRequest patchUserRequest, String username, String bearerToken) {
+        if (UserUtils.getRoleFromBearerToken(bearerToken).stream().noneMatch(role -> role.equals("ADMIN"))) {
+            UserUtils.throwIfRequestUserTheSameAsTargetUser(username, bearerToken);
+        }
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
+
+        if (patchUserRequest.firstName() != null) {
+            user.setFirstName(patchUserRequest.firstName());
+        }
+
+        if (patchUserRequest.lastName() != null) {
+            user.setLastName(patchUserRequest.lastName());
+        }
+
+        if (patchUserRequest.dob() != null) {
+            user.setDob(patchUserRequest.dob());
+        }
+
+        userRepository.save(user);
     }
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {

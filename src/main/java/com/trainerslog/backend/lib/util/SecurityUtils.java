@@ -1,10 +1,11 @@
-package com.trainerslog.backend.lib.security;
+package com.trainerslog.backend.lib.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainerslog.backend.lib.entity.User;
+import com.trainerslog.backend.lib.security.SecurityConstants;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
