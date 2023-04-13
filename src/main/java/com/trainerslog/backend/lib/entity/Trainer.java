@@ -36,6 +36,6 @@ public class Trainer {
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainer", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Reservation> trainerReservations;
 }

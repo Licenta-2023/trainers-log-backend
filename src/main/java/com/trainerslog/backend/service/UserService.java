@@ -110,7 +110,30 @@ public class UserService implements UserDetailsService {
             user.setDob(patchUserRequest.dob());
         }
 
+        if (patchUserRequest.newRoles().size() > 0 && UserUtils.getRoleFromBearerToken(bearerToken).stream().anyMatch(role -> role.equals(UserRoles.ADMIN.toString()))) {
+            handleRolesUpdate(user, patchUserRequest.newRoles());
+        }
+
         userRepository.save(user);
+    }
+
+    private void handleRolesUpdate(User user, List<UserRoles> newRoles) {
+        boolean userIsTrainerBeforeUpdate = user.getRoles().stream().anyMatch(role -> role.getName().equals(UserRoles.TRAINER));
+        boolean userIsTrainerAfterUpdate = newRoles.stream().anyMatch(role -> role.equals(UserRoles.TRAINER));
+
+        log.info("Removing user roles");
+        user.getRoles().removeIf(userRole -> newRoles.stream().noneMatch(newRole -> newRole.equals(userRole.getName())));
+
+        log.info("Adding new user roles");
+        newRoles.forEach(newRole -> user.getRoles().add(roleRepository.findByName(newRole).orElseThrow(() -> new NotFoundException(String.format("Role with name %s not found", newRole)))));
+
+        if (!userIsTrainerBeforeUpdate && userIsTrainerAfterUpdate) {
+            createTrainerWithoutPresence(user);
+        }
+
+        if (userIsTrainerBeforeUpdate && !userIsTrainerAfterUpdate) {
+            deleteTrainer(user);
+        }
     }
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -156,5 +179,18 @@ public class UserService implements UserDetailsService {
         Trainer trainer = new Trainer();
         trainer.setUser(user);
         trainerRepository.save(trainer);
+    }
+
+    private void deleteTrainer(User user) {
+        Trainer trainer = trainerRepository.findByUsername(user.getUsername()).orElseThrow(() -> new NotFoundException(String.format("No trainer with username %s found.", user.getUsername())));
+        trainer.setUser(null);
+        trainerRepository.delete(trainer);
+    }
+
+    @Transactional
+    public void deleteUser(String username) {
+        userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
+        log.info("Deleting user " + username);
+        this.userRepository.removeByUsername(username);
     }
 }

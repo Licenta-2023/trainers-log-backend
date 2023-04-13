@@ -63,4 +63,11 @@ public class UserController {
     ) {
         return ResponseBuilder.ok(userService.getUser(username, bearerToken));
     }
+
+    @DeleteMapping("/{username}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteUser(@PathVariable("username") String username) {
+        this.userService.deleteUser(username);
+        return ResponseBuilder.noContent();
+    }
 }
