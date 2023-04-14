@@ -43,6 +43,11 @@ public class RestResponseEntityExceptionHandler {
         return ResponseBuilder.notFound(exception.getMessage());
     }
 
+    @ExceptionHandler(value = IncorrectPasswordException.class)
+    protected ResponseEntity<?> handleIncorrectPasswordException(RuntimeException exception) {
+        return ResponseBuilder.unauthorized(exception.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(
             MethodArgumentNotValidException ex) {

@@ -28,6 +28,10 @@ public class ResponseBuilder {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    public static ResponseEntity<?> unauthorized(Object body) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
     public static ResponseEntity<?> badRequest(Object body) {
         return ResponseEntity.badRequest().body(body);
     }
