@@ -54,6 +54,8 @@ public class ReservationService {
         String requestUsername = UserUtils.getUsernameFromBearerToken(authorization);
         validateRequestUserForDeleteReservation(reservationRequest, requestUsername);
 
+        throwIfReservationIsInPast(reservationRequest.timeIntervalBegin());
+
         LocalDateTime truncatedByHoursTimeIntervalBegin = reservationRequest.timeIntervalBegin().truncatedTo(ChronoUnit.HOURS);
         List<Reservation> reservations = reservationRepository.findReservationsForTrainerAtGivenMoment(reservationRequest.trainerUsername(), truncatedByHoursTimeIntervalBegin);
         if (reservations.size() == 0) {
@@ -90,7 +92,11 @@ public class ReservationService {
         LocalDateTime truncatedByHoursTimeIntervalBegin = reservationRequest.timeIntervalBegin().truncatedTo(ChronoUnit.HOURS);
         List<Reservation> trainerReservationsAtGivenMoment = reservationRepository.findReservationsForTrainerAtGivenMoment(reservationRequest.trainerUsername(), truncatedByHoursTimeIntervalBegin);
 
+        throwIfReservationIsInPast(truncatedByHoursTimeIntervalBegin);
+
         throwIfIntervalHasBlocker(reservationRequest, truncatedByHoursTimeIntervalBegin, trainerReservationsAtGivenMoment);
+
+        throwIfUserHasOtherReservationInTheSameTimeInterval(reservationRequest.username(), truncatedByHoursTimeIntervalBegin);
 
         throwIfReservationAlreadyExistAndNewOneIsBlocker(trainerReservationsAtGivenMoment, reservationRequest);
 
@@ -101,6 +107,18 @@ public class ReservationService {
         }
 
         checkForDuplicateReservation(reservationRequest, truncatedByHoursTimeIntervalBegin, trainerReservationsAtGivenMoment);
+    }
+
+    private void throwIfUserHasOtherReservationInTheSameTimeInterval(String username, LocalDateTime truncatedByHoursTimeIntervalBegin) {
+        if (this.reservationRepository.findReservationsForUserAtGivenMoment(username, truncatedByHoursTimeIntervalBegin).size() > 0) {
+            throw new ClientException(String.format("User %s has a reservation for the time interval %s", username, truncatedByHoursTimeIntervalBegin));
+        }
+    }
+
+    private void throwIfReservationIsInPast(LocalDateTime reservationTimeIntervalBegin) {
+        if (LocalDateTime.now().isAfter(reservationTimeIntervalBegin)) {
+            throw new ClientException("Cannot create or modify a reservation in the past");
+        }
     }
 
     private void throwIfOutsideWorkingHours(LocalTime reservationBegin, Trainer trainer) {

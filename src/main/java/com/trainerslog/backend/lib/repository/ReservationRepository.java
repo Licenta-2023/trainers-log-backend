@@ -19,6 +19,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("select r from Reservation r " +
             "join User u on r.client = u " +
+            "where u.username = :username " +
+            "and r.timeIntervalBegin = :reservationTime")
+    List<Reservation> findReservationsForUserAtGivenMoment(String username, LocalDateTime reservationTime);
+
+    @Query("select r from Reservation r " +
+            "join User u on r.client = u " +
             "where r.client.username = :username and month(r.timeIntervalBegin) = :month and year(r.timeIntervalBegin) = :year")
     List<Reservation> findReservationsForUserByMonth(String username, int year, int month);
 
