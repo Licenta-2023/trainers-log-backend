@@ -1,6 +1,7 @@
 package com.trainerslog.backend.controller;
 
 import com.trainerslog.backend.lib.entity.User;
+import com.trainerslog.backend.lib.types.PatchUserPasswordRequest;
 import com.trainerslog.backend.lib.types.PatchUserRequest;
 import com.trainerslog.backend.lib.types.UserRoleAdd;
 import com.trainerslog.backend.lib.util.ResponseBuilder;
@@ -56,6 +57,16 @@ public class UserController {
         return ResponseBuilder.noContent();
     }
 
+    @PatchMapping("/{username}/password")
+    public ResponseEntity<?> patchUserPassword(
+            @PathVariable("username") String username,
+            @RequestBody PatchUserPasswordRequest patchUserPasswordRequest,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken
+    ) {
+        userService.patchUserPassword(patchUserPasswordRequest, username, bearerToken);
+        return ResponseBuilder.noContent();
+    }
+
     @GetMapping("/{username}")
     public ResponseEntity<?> getUser(
             @PathVariable("username") String username,
@@ -70,4 +81,5 @@ public class UserController {
         this.userService.deleteUser(username);
         return ResponseBuilder.noContent();
     }
+
 }

@@ -20,7 +20,7 @@ public class UserUtils {
         return roles.asList(String.class);
     }
 
-    public static void throwIfRequestUserTheSameAsTargetUser(String username, String bearerToken) {
+    public static void throwIfRequestUserNotTheSameAsTargetUser(String username, String bearerToken) {
         String requestUsername = UserUtils.getUsernameFromBearerToken(bearerToken);
         if (!username.equals(requestUsername)) {
             throw new ClientException(String.format("User %s cannot do any changes for an other user: %s", requestUsername, username));

@@ -5,8 +5,10 @@ import com.trainerslog.backend.lib.entity.Trainer;
 import com.trainerslog.backend.lib.entity.User;
 import com.trainerslog.backend.lib.exception.ClientException;
 import com.trainerslog.backend.lib.exception.DuplicateUserRoleException;
+import com.trainerslog.backend.lib.exception.IncorrectPasswordException;
 import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
+import com.trainerslog.backend.lib.types.PatchUserPasswordRequest;
 import com.trainerslog.backend.lib.util.SecurityUtils;
 import com.trainerslog.backend.lib.types.PatchUserRequest;
 import com.trainerslog.backend.lib.types.UserRoles;
@@ -70,7 +72,7 @@ public class UserService implements UserDetailsService {
 
     public User getUser(String username, String bearerToken) {
         if (UserUtils.getRoleFromBearerToken(bearerToken).stream().noneMatch(role -> role.equals("ADMIN"))) {
-            UserUtils.throwIfRequestUserTheSameAsTargetUser(username, bearerToken);
+            UserUtils.throwIfRequestUserNotTheSameAsTargetUser(username, bearerToken);
         }
         return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
     }
@@ -93,7 +95,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void patchUser(PatchUserRequest patchUserRequest, String username, String bearerToken) {
         if (UserUtils.getRoleFromBearerToken(bearerToken).stream().noneMatch(role -> role.equals("ADMIN"))) {
-            UserUtils.throwIfRequestUserTheSameAsTargetUser(username, bearerToken);
+            UserUtils.throwIfRequestUserNotTheSameAsTargetUser(username, bearerToken);
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
@@ -115,6 +117,27 @@ public class UserService implements UserDetailsService {
         }
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void patchUserPassword(PatchUserPasswordRequest patchUserPasswordRequest, String username, String bearerToken) {
+        if (UserUtils.getRoleFromBearerToken(bearerToken).stream().noneMatch(role -> role.equals("ADMIN"))) {
+            UserUtils.throwIfRequestUserNotTheSameAsTargetUser(username, bearerToken);
+        }
+        User user = this.getUser(username);
+
+        throwIfCurrentPasswordIsWrong(user, patchUserPasswordRequest.currentPassword());
+
+        user.setPassword(this.passwordEncoder.encode(patchUserPasswordRequest.newPassword()));
+
+        userRepository.save(user);
+    }
+
+    private void throwIfCurrentPasswordIsWrong(User user, String currentPassword) {
+        boolean currentPasswordMatchesActualPassword = this.passwordEncoder.matches(currentPassword, user.getPassword());
+        if (!currentPasswordMatchesActualPassword) {
+            throw new IncorrectPasswordException("Incorrect password for user " + user.getUsername());
+        }
     }
 
     private void handleRolesUpdate(User user, List<UserRoles> newRoles) {
@@ -189,7 +212,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void deleteUser(String username) {
-        userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User %s not found in the database.", username)));
+        this.getUser(username);
         log.info("Deleting user " + username);
         this.userRepository.removeByUsername(username);
     }
