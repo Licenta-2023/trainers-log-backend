@@ -44,6 +44,8 @@ public class UserService implements UserDetailsService {
 
     private final TrainerRepository trainerRepository;
 
+    private final TrainerService trainerService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -114,6 +116,10 @@ public class UserService implements UserDetailsService {
 
         if (patchUserRequest.newRoles().size() > 0 && UserUtils.getRoleFromBearerToken(bearerToken).stream().anyMatch(role -> role.equals(UserRoles.ADMIN.toString()))) {
             handleRolesUpdate(user, patchUserRequest.newRoles());
+        }
+
+        if (patchUserRequest.patchTrainerBody().isPresent()) {
+            this.trainerService.patchTrainer(username, patchUserRequest.patchTrainerBody().get());
         }
 
         userRepository.save(user);
