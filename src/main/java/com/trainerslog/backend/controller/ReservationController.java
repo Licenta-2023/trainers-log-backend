@@ -68,4 +68,12 @@ public class ReservationController {
     ) {
         return ResponseBuilder.ok(reservationService.getCurrentDayReservationsForTrainer(username, year, month, day));
     }
+
+    @GetMapping("/statistics/years/{year}/months/{month}")
+    public ResponseEntity<?> getReservationsStatisticsByYearAndMonth(
+            @PathVariable("year") Integer year,
+            @PathVariable("month") Integer month
+    ) {
+        return ResponseBuilder.ok(reservationService.getReservationsStatisticsByYearAndMonth(year, month));
+    }
 }

@@ -17,7 +17,8 @@ public class SecurityConstants {
 
     private static final String[] permittedToAll = {
             "/api/user/login",
-            "/api/user/register"
+            "/api/user/register",
+            "/api/reservation/statistics/years/*/months/*"
     };
 
     public static byte[] getSecret() {

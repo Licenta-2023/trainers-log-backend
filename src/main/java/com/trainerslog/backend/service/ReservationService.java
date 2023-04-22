@@ -8,17 +8,16 @@ import com.trainerslog.backend.lib.exception.NotFoundException;
 import com.trainerslog.backend.lib.repository.ReservationRepository;
 import com.trainerslog.backend.lib.repository.TrainerRepository;
 import com.trainerslog.backend.lib.repository.UserRepository;
-import com.trainerslog.backend.lib.types.ReservationRequest;
-import com.trainerslog.backend.lib.types.ReservationType;
-import com.trainerslog.backend.lib.types.UserRoles;
+import com.trainerslog.backend.lib.types.*;
 import com.trainerslog.backend.lib.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -181,5 +180,26 @@ public class ReservationService {
 
     public List<Reservation> getCurrentDayReservationsForTrainer(String username, Integer year, Integer month, Integer day) {
         return reservationRepository.findReservationsForTrainerByMonthAndDay(username, year, month, day);
+    }
+
+    public List<ReservationsStatistics> getReservationsStatisticsByYearAndMonth(Integer year, Integer month) {
+        LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1,  0, 0, 0);
+        LocalDateTime endOfMonth = startOfMonth.toLocalDate()
+                .withDayOfMonth(startOfMonth.toLocalDate().lengthOfMonth())
+                .atTime(LocalTime.MAX);
+        List<ReservationCount> reservationCountPerDay = this.reservationRepository.findReservationsByYearAndMonth(startOfMonth, endOfMonth);
+
+        return LocalDate.from(startOfMonth)
+                .datesUntil(LocalDate.from(endOfMonth).plusDays(1))
+                .map(date -> new ReservationsStatistics(date, getCountForDate(reservationCountPerDay, date).intValue()))
+                .collect(Collectors.toList());
+    }
+
+    private static Long getCountForDate(List<ReservationCount> reservations, LocalDate date) {
+        return reservations.stream()
+                .filter(reservation -> date.equals(reservation.date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
+                .mapToLong(ReservationCount::count)
+                .findFirst()
+                .orElse(0L);
     }
 }
