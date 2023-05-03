@@ -2,6 +2,7 @@ package com.trainerslog.backend;
 
 import com.trainerslog.backend.lib.entity.Role;
 import com.trainerslog.backend.lib.entity.User;
+import com.trainerslog.backend.lib.repository.UserRepository;
 import com.trainerslog.backend.lib.types.UserRoles;
 import com.trainerslog.backend.service.RoleService;
 import com.trainerslog.backend.service.UserService;
@@ -19,22 +20,26 @@ public class TrainersLogBackendApplication {
 		SpringApplication.run(TrainersLogBackendApplication.class, args);
 	}
 
-	//TODO: remove this in the future
-//	@Bean
-//	CommandLineRunner run(UserService userService, RoleService roleService) {
-//		return args -> {
-//			try {
-//				User admin = new User();
-//				admin.setUsername("Daci");
-//				admin.setPassword("Daci123");
-//				userService.createUser(admin);
-//
-//				roleService.createRole(new Role(null, UserRoles.ADMIN));
-//
-//				userService.addRoleToUser("Daci", "ADMIN");
-//			} catch (Exception ignored) {}
-//
-//		};
-//	}
+	@Bean
+	CommandLineRunner run(UserService userService, RoleService roleService, UserRepository userRepository) {
+		return args -> {
+			try {
+				User admin = new User();
+				admin.setUsername("ADMIN");
+				admin.setPassword("Daci123");
+				admin.setDob(LocalDate.now());
+				admin.setFirstName("ADMIN");
+				admin.setLastName("ADMIN");
 
+
+				roleService.createRole(new Role(null, UserRoles.ADMIN));
+				roleService.createRole(new Role(null, UserRoles.TRAINER));
+				roleService.createRole(new Role(null, UserRoles.USER));
+
+				userRepository.save(userService.createUser(admin));
+
+				userService.addRoleToUser("ADMIN", "ADMIN");
+			} catch (Exception ignored) {}
+		};
+	}
 }
